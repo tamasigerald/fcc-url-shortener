@@ -4,7 +4,6 @@ const cors = require('cors');
 const path = require('path');
 const mongoose = require('mongoose');
 const urlExists = require('url-exists-deep');
-const {nanoid} = require('nanoid');
 
 const Url = require('./Url.model');
 
@@ -28,13 +27,7 @@ async function newUrl(req, res) {
     const {body} = req;
     try {
         let url = body.url;
-        var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
-            '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-            '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-            '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-        const checkUrl = pattern.test(str);
+        const checkUrl = await urlExists(url);
         if (checkUrl === false) {
             throw error
         }
@@ -58,24 +51,11 @@ async function newUrl(req, res) {
     }
 }
 
-async function redirectToOriginal(req, res) {
-    const urlID = req.params.short_url;
-    try {
-        await Url.findOne({short: urlID}, (err, found) => {
-            const url = `${found.original}`;
-            res.redirect(301, url);
-        })
-    } catch (error) {
-        res.status(400).json({ error: 'invalid url'})
-    }
-}
-
 
 
 // Routes
 router.get('/', getIndexView);
 router.post('/api/shorturl/new', newUrl)
-router.get('/api/shorturl/:short_url', redirectToOriginal)
 
 // Loader
 function loader(app) {
