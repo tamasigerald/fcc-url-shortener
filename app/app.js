@@ -25,12 +25,11 @@ function getIndexView(req, res) {
 
 async function newUrl(req, res) {
     const {body} = req;
+    const checkUrl = await urlExists(url);
+    
     try {
         let url = body.url;
-        //const checkUrl = await urlExists(url);
-        //if (checkUrl === false) {
-          //  throw error
-        //}
+       console.log("no error",checkUrl);
         await Url.findOne({original: url}, async (err, found) => {
             if (found) {
                 res.status(201).json({ original_url: found.original, short_url: found.short });
@@ -45,7 +44,7 @@ async function newUrl(req, res) {
             }
         });
     } catch (error) {
-        console.log(body);
+        console.log("error",checkUrl);
         res.status(400).json({
             error: 'invalid url'
         });
