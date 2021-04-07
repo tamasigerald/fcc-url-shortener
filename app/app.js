@@ -45,6 +45,7 @@ async function newUrl(req, res) {
             }
         });
     } catch (error) {
+        console.log(body);
         res.status(400).json({
             error: 'invalid url'
         });
