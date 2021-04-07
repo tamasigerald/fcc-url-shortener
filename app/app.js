@@ -25,10 +25,10 @@ function getIndexView(req, res) {
 
 async function newUrl(req, res) {
     const {body} = req;
+    let url = body.url;
     const checkUrl = await urlExists(url);
     
     try {
-        let url = body.url;
        console.log("no error",checkUrl);
         await Url.findOne({original: url}, async (err, found) => {
             if (found) {
