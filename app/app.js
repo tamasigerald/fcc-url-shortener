@@ -3,7 +3,7 @@ const router = express.Router();
 const cors = require('cors');
 const path = require('path');
 const mongoose = require('mongoose');
-const urlExists = require('url-exists-deep');
+const urlExists = require('url-exists');
 const {nanoid} = require('nanoid');
 
 const Url = require('./Url.model');
@@ -28,21 +28,26 @@ async function newUrl(req, res) {
     const {body} = req;
     try {
         let url = body.url;
-        const checkUrl = await urlExists(url);
-        if (checkUrl === false) {
-            throw error
-        }
-        await Url.findOne({original: url}, async (err, found) => {
-            if (found) {
-                res.status(201).json({ original_url: found.original, short_url: found.short });
+        const checkUrl = await urlExists(url, async (err, exists) => {
+            if (!exists) {
+                res.status(400).json({
+                    error: 'invalid url'
+                });
             }
             else {
-                const urlID = nanoid(8); 
-                const newUrl = await Url.create({
-                    original: url,
-                    short: urlID
+                await Url.findOne({original: url}, async (err, found) => {
+                    if (found) {
+                        res.status(201).json({ original_url: found.original, short_url: found.short });
+                    }
+                    else {
+                        const urlID = nanoid(8); 
+                        const newUrl = await Url.create({
+                            original: url,
+                            short: urlID
+                        });
+                        res.status(201).json({ original_url: newUrl.original, short_url: newUrl.short });
+                    }
                 });
-                res.status(201).json({ original_url: newUrl.original, short_url: newUrl.short });
             }
         });
     } catch (error) {
