@@ -28,7 +28,7 @@ async function newUrl(req, res) {
     const {body} = req;
     try {
         let url = body.url;
-        // const checkUrl = await urlExists(url);
+        const checkUrl = await urlExists(url);
         // if (checkUrl === false) {
         //     throw error
         // }
