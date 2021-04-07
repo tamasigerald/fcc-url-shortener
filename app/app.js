@@ -3,7 +3,7 @@ const router = express.Router();
 const cors = require('cors');
 const path = require('path');
 const mongoose = require('mongoose');
-const urlExists = require('url-exists-deep');
+const {urlExists} = require('url-exists-deep');
 
 const Url = require('./Url.model');
 
