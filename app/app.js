@@ -33,7 +33,7 @@ async function newUrl(req, res) {
         // if (checkUrl === false) {
         //     throw error
         // }
-        dns.lookup(url, err => {
+        dns.lookup(url, async err => {
             if (err) {
                 throw error;
             }
