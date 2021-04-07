@@ -27,10 +27,10 @@ async function newUrl(req, res) {
     const {body} = req;
     try {
         let url = body.url;
-        const checkUrl = await urlExists(url);
-        if (checkUrl === false) {
-            throw error
-        }
+        //const checkUrl = await urlExists(url);
+        //if (checkUrl === false) {
+          //  throw error
+        //}
         await Url.findOne({original: url}, async (err, found) => {
             if (found) {
                 res.status(201).json({ original_url: found.original, short_url: found.short });
