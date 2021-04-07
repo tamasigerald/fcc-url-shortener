@@ -28,9 +28,9 @@ async function newUrl(req, res) {
     const {body} = req;
     try {
         let url = body.url;
-        const checkUrl = await urlExists(url, async (err, exists) => {
+        await urlExists(url, async (err, exists) => {
             if (!exists) {
-                res.status(400).json({
+                res.status(200).json({
                     error: 'invalid url'
                 });
             }
